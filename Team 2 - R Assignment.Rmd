@@ -1,0 +1,155 @@
+---
+title: "Team 2 - R Assignment"
+output: pdf_document
+date: "2022-08-05"
+---
+
+```{r}
+library("ggplot2")
+library("magrittr")
+library("dplyr")
+```
+```{r}
+vgsales <- read.csv("~/Desktop/Intro to Analytics System/vgsales.csv")
+```
+
+```{r}
+#1 Print the structure of your dataset
+str(vgsales)
+```
+
+```{r}
+#2 List the variables in your dataset
+names(vgsales)
+```
+
+```{r}
+#3 Print the top 15 rows of your dataset
+head(vgsales,n=15)
+```
+
+```{r}
+#4 Write a user defined function using any of the variables from the data set
+DoubleNA_Sales <-function(x){
+  x*2
+}
+DoubleNA_Sales(vgsales$NA_Sales)
+```
+
+```{r}
+#5 Use data manipulation techniques and Filter rows
+vgsales %>% filter(Year>2000)
+```
+
+```{r}
+#6 Identify the dependent & independent variables and use reshaping techniques
+independent = vgsales$EU_Sales
+dependent = as.data.frame(vgsales %>% select(2:6))
+new = as.data.frame(cbind(independent,dependent))
+names(new)[1]="EU_Sales"
+new
+```
+
+```{r}
+#7 Remove missing values in your dataset
+Blank <- data.frame(0,1,2,3,4,5,6,7,8,9,10, row.names = "Blank")
+Blank[Blank == 0] <- NA
+names(Blank) <- names(vgsales)
+newvgsales <- rbind(vgsales, Blank)
+newvgsales
+```
+
+```{r}
+#8 Identify and remove duplicated data in your dataset
+vgsales1 = rbind(vgsales,vgsales)
+vgsales_unique <- vgsales[!duplicated(vgsales1),]
+vgsales_unique
+```
+
+```{r}
+#9 Reorder mutliple rows in descending order
+vgsales %>% arrange(desc(JP_Sales), desc(EU_Sales), desc(Global_Sales) )
+```
+
+```{r}
+#10 Rename some of the column names in your dataset
+vgsales %>% rename(Category = Genre, Console = Platform, Ranking = Rank)
+```
+
+```{r}
+#11 Add new variables in your data frame by using a mathematical function
+vgsales %>% mutate(DoubleJP_Sales = JP_Sales*2)
+```
+
+```{r}
+#12 Create a training set using random number generator engine
+ new_set <- vgsales %>% sample_frac(0.6, replace = FALSE)
+new_set
+```
+
+```{r}
+#13 Print the summary statistics of your dataset
+summary(vgsales)
+```
+
+```{r}
+#14 Perform the following statistical
+#Mean
+mean(vgsales$NA_Sales)
+functions
+```
+```{r}
+#Median
+median(vgsales$EU_Sales)
+```
+```{r}
+#Mode
+getmode <- function(x){
+  unique <- unique(x)
+  tab <- tabulate(match(unique,x))
+  unique[tab == max(tab)]
+}
+getmode(vgsales$JP_Sales)
+```
+
+```{r}
+#Range
+range(vgsales$Global_Sales)
+```
+
+```{r}
+#15 Plot a scatter plot for any 2 variables in your dataset
+ggplot(vgsales, aes(x=Other_Sales, y=Global_Sales)) +
+  geom_point(size=1.5, color = "green", shape=20)
+```
+
+
+```{r}
+#16 Plot a bar plot for any 2 variables in your dataset
+ggplot(data = vgsales, aes(x = NA_Sales)) +
+  geom_bar(fill = "green")
+```
+
+```{r}
+#17 Find the correlation between any 2 variables by applying least square linear regression model
+x = vgsales[, "NA_Sales"]
+y = vgsales[, "JP_Sales"]
+head(x)
+```
+
+```{r}
+head(y)
+```
+
+```{r}
+XYcorrelation <- cor(x,y, method = "pearson")
+XYcorrelation
+```
+
+```{r}
+plot(y~x, col = x)
+model1 = lm(y~x)
+model1
+abline(model1, col = "green", lwd = 3)
+```
+
